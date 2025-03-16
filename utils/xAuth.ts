@@ -42,11 +42,11 @@ export class XAuth {
   }
 
   // Get request token
-  async getRequestToken(): Promise<RequestTokenResponse> {
+  async getRequestToken(callbackUrl: string): Promise<RequestTokenResponse> {
     const request = {
       url: 'https://api.x.com/oauth/request_token',
       method: 'POST',
-      data: { oauth_callback: 'https://octopost-henna.vercel.app/api/auth/x/callback' }
+      data: { oauth_callback: callbackUrl }
     };
 
     console.log('x-- request:', request);
