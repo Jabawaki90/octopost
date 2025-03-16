@@ -1,6 +1,6 @@
 // 3. Create API route for initiating auth - app/api/auth/x/route.ts
 import { cookies } from 'next/headers';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { XAuth } from '../../../../../utils/xAuth';
 
 export async function GET() {
