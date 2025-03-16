@@ -27,7 +27,7 @@ export default function TweetForm({
     setError(null);
     
     try {
-      const response = await fetch('/api/tweet', {
+      const response = await fetch('/api/tweets', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

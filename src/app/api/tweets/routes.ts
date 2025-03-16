@@ -6,6 +6,13 @@ import OAuth from 'oauth-1.0a';
 export async function POST(req: NextRequest) {
   try {
     const { text, oauth_token, oauth_token_secret, consumer_key, consumer_secret } = await req.json();
+
+    console.log('x-- text:', text);
+    console.log('x-- oauth_token:', oauth_token);
+    console.log('x-- oauth_token_secret:', oauth_token_secret);
+    console.log('x-- consumer_key:', consumer_key);
+    console.log('x-- consumer_secret:', consumer_secret);
+    
     
     // Initialize OAuth
     const oauth = new OAuth({
