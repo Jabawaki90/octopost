@@ -8,8 +8,8 @@ import { redirect } from 'next/navigation';
 export default async function TweetPage() {
   // Get credentials from a secure storage method
   const cookieStore = await cookies();
-  const oauthToken = cookieStore.get('twitter_oauth_token')?.value;
-  const oauthTokenSecret = cookieStore.get('twitter_oauth_token_secret')?.value;
+  const oauthToken = cookieStore.get('x_access_token')?.value;
+  const oauthTokenSecret = cookieStore.get('x_access_token_secret')?.value;
   
   // These should be fetched from environment variables
   const consumerKey = process.env.CLIENT_API_KEY || '';
