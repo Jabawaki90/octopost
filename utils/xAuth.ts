@@ -28,8 +28,10 @@ export class XAuth {
     // Initialize OAuth
     this.oauth = new OAuth({
       consumer: {
-        key: credentials.apiKey,
-        secret: credentials.apiSecretKey
+        // key: credentials.apiKey,
+        key: process.env.CLIENT_API_KEY!,
+        // secret: credentials.apiSecretKey
+        secret: process.env.CLIENT_API_SECRET_KEY!
       },
       signature_method: 'HMAC-SHA1',
       hash_function(baseString, key) {
