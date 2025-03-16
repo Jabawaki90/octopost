@@ -159,6 +159,7 @@ export class XAuth {
     if (!this.credentials.accessToken || !this.credentials.accessTokenSecret) {
       throw new Error('Access token and secret are required for authenticated requests');
     }
+console.log('x-- urls:', url);
 
     const request = {
       url,
