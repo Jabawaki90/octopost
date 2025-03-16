@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     });
     
     const requestData = {
-      url: 'https://api.x.com/1.1/statuses/update.json',
+      url: 'https://api.twitter.com/1.1/statuses/update.json',
       method: 'POST',
       data: { status: text }
     };
