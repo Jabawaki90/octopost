@@ -1,24 +1,19 @@
 'use client';
 
 import { useState } from 'react';
+
+type RequestData = Record<string, string | number | boolean | string[]>;
+
 interface TweetFormProps {
-    accessTokenSecret: string;
-    accessToken: string;
-  }
+  onSuccess?: (tweetData: RequestData) => void;
+  onError?: (error: Error) => void;
+}
 
-// type RequestData = Record<string, string | number | boolean | string[]>;
-
-// interface TweetFormProps {
-//   onSuccess?: (tweetData: RequestData) => void;
-//   onError?: (error: Error) => void;
-// }
-
-export const TweetForm = ({accessTokenSecret, accessToken}:TweetFormProps) => {
+export default function TweetForm({ onSuccess, onError }: TweetFormProps) {
   const [text, setText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [charCount, setCharCount] = useState(0);
-
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = e.target.value;
@@ -26,88 +21,52 @@ export const TweetForm = ({accessTokenSecret, accessToken}:TweetFormProps) => {
     setCharCount(newText.length);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setError(null);
+    
+    if (!text.trim()) {
+      setError('Tweet cannot be empty');
+      return;
+    }
+    
+    setIsSubmitting(true);
     
     try {
       const response = await fetch('/api/tweet', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          text, 
-          oauth_token: accessToken,
-          oauth_token_secret: accessTokenSecret,
-          consumer_key: process.env.CLIENT_API_KEY,
-          consumer_secret: process.env.CLIENT_API_SECRET_KEY
-        })
+        body: JSON.stringify({ text })
       });
       
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.error?.message || 'Failed to post tweet');
+        throw new Error(data.error || 'Failed to post tweet');
       }
-      console.log('x-- success post:', data);
       
-
-      setText(''); // Clear form after successful post
+      // Success - clear the form
+      setText('');
+      setCharCount(0);
+      
+      // Call success callback if provided
+      if (onSuccess) {
+        onSuccess(data);
+      }
+      
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      setError((err as Error).message);
+      
+      // Call error callback if provided
+      if (onError) {
+        onError(err as Error);
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
-
-//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-//     setError(null);
-    
-//     if (!text.trim()) {
-//       setError('Tweet cannot be empty');
-//       return;
-//     }
-    
-//     setIsSubmitting(true);
-    
-//     try {
-//       const response = await fetch('/api/tweet', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ text })
-//       });
-      
-//       const data = await response.json();
-      
-//       if (!response.ok) {
-//         throw new Error(data.error || 'Failed to post tweet');
-//       }
-      
-//       // Success - clear the form
-//       setText('');
-//       setCharCount(0);
-      
-//       // Call success callback if provided
-//       if (onSuccess) {
-//         onSuccess(data);
-//       }
-      
-//     } catch (err) {
-//       setError((err as Error).message);
-      
-//       // Call error callback if provided
-//       if (onError) {
-//         onError(err as Error);
-//       }
-//     } finally {
-//       setIsSubmitting(false);
-//     }
-//   };
 
   return (
     <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
