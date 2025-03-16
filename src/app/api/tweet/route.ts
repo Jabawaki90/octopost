@@ -32,8 +32,8 @@ export async function POST(req: NextRequest) {
     
     // Initialize XAuth with your API credentials and the user's access tokens
     const xAuth = new XAuth({
-      apiKey: process.env.X_API_KEY!,
-      apiSecretKey: process.env.X_API_SECRET_KEY!,
+      apiKey: process.env.CLIENT_API_KEY!,
+      apiSecretKey: process.env.CLIENT_API_SECRET_KEY!,
       accessToken,
       accessTokenSecret
     });

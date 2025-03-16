@@ -19,6 +19,8 @@ export default function TweetPage() {
       try {
         const response = await fetch('/api/user');
         if (response.ok) {
+            console.log('x-- response:', response);
+            
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
