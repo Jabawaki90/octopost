@@ -29,6 +29,12 @@ export async function POST(req: NextRequest) {
         error: 'Tweet text exceeds 280 characters' 
       }, { status: 400 });
     }
+
+    console.log('x-- apiKey:', process.env.CLIENT_API_KEY);
+    console.log('x-- apiSecretKey:', process.env.CLIENT_API_SECRET_KEY);
+    console.log('x-- accessToken:', accessToken);
+    console.log('x-- accessTokenSecret:', accessTokenSecret);
+    
     
     // Initialize XAuth with your API credentials and the user's access tokens
     const xAuth = new XAuth({
