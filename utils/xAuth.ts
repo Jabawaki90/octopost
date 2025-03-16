@@ -49,8 +49,12 @@ export class XAuth {
       data: { oauth_callback: callbackUrl }
     };
 
+    console.log('x-- request:', request);
+    
+    
     // Get authorization header
     const authHeader = this.oauth.toHeader(this.oauth.authorize(request));
+    console.log('x-- authHeader:', authHeader);
 
     try {
       const response = await fetch(request.url, {
@@ -62,12 +66,17 @@ export class XAuth {
         body: new URLSearchParams(request.data).toString()
       });
 
+      console.log('x-- response:', response);
+      
+      
       if (!response.ok) {
-        throw new Error(`Failed to get request token: ${response.status} ${response.statusText}`);
-      }
-
-      const responseText = await response.text();
-      const parsedResponse = this.parseResponseText(responseText);
+          throw new Error(`Failed to get request token: ${response.status} ${response.statusText}`);
+        }
+        
+        const responseText = await response.text();
+        console.log('x-- responseText:', responseText);
+        const parsedResponse = this.parseResponseText(responseText);
+        console.log('x-- parsedResponse:', parsedResponse);
       
       // Convert to RequestTokenResponse with validation
       return this.toRequestTokenResponse(parsedResponse);
