@@ -1,22 +1,24 @@
 'use client';
 
 import { useState } from 'react';
-import { cookies } from 'next/headers';
-type RequestData = Record<string, string | number | boolean | string[]>;
-
 interface TweetFormProps {
-  onSuccess?: (tweetData: RequestData) => void;
-  onError?: (error: Error) => void;
-}
+    accessTokenSecret: string;
+    accessToken: string;
+  }
 
-export default function TweetForm({ onSuccess, onError }: TweetFormProps) {
+// type RequestData = Record<string, string | number | boolean | string[]>;
+
+// interface TweetFormProps {
+//   onSuccess?: (tweetData: RequestData) => void;
+//   onError?: (error: Error) => void;
+// }
+
+export const TweetForm = ({accessTokenSecret, accessToken}:TweetFormProps) => {
   const [text, setText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [charCount, setCharCount] = useState(0);
 
-console.log('x-- onSuccess:', onSuccess);
-console.log('x-- onError:', onError);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = e.target.value;
@@ -28,10 +30,6 @@ console.log('x-- onError:', onError);
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
-
-    const cookie = await cookies()
-        const accessToken = cookie.get('x_access_token')?.value;
-        const accessTokenSecret = cookie.get('x_access_token_secret')?.value;
     
     try {
       const response = await fetch('/api/tweet', {

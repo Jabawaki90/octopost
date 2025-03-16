@@ -5,12 +5,12 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import TweetForm from '../components/TweetForm';
+// import TweetForm from '../components/TweetForm';
 
 
 export default function TweetPage() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+//   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const router = useRouter();
 
   // Check if user is authenticated
@@ -38,14 +38,14 @@ export default function TweetPage() {
     router.push('/api/auth/x');
   };
 
-  const handleTweetSuccess = () => {
-    setSuccessMessage('Your tweet was posted successfully!');
+//   const handleTweetSuccess = () => {
+//     setSuccessMessage('Your tweet was posted successfully!');
     
-    // Clear success message after 5 seconds
-    setTimeout(() => {
-      setSuccessMessage(null);
-    }, 5000);
-  };
+//     // Clear success message after 5 seconds
+//     setTimeout(() => {
+//       setSuccessMessage(null);
+//     }, 5000);
+//   };
 
   if (isAuthenticated === null) {
     return (
@@ -64,13 +64,13 @@ export default function TweetPage() {
       
       {isAuthenticated ? (
         <>
-          {successMessage && (
+          {/* {successMessage && (
             <div className="mb-6 p-4 bg-green-100 text-green-700 rounded-md">
               {successMessage}
             </div>
-          )}
+          )} */}
           
-          <TweetForm onSuccess={handleTweetSuccess} />
+          {/* <TweetForm onSuccess={handleTweetSuccess} /> */}
         </>
       ) : (
         <div className="text-center p-8 bg-gray-100 rounded-lg">
