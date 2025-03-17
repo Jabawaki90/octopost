@@ -181,7 +181,9 @@ console.log('x-- urls:', url);
         method: request.method,
         headers: {
           ...authHeader,
-          'Content-Type': 'application/x-www-form-urlencoded'
+        //   'Content-Type': 'application/x-www-form-urlencoded'
+        'Authorization': process.env.BEARER_TOKEN as string,
+          'Content-Type': 'application/json',
         },
         body: method === 'POST' ? new URLSearchParams(data as Record<string, string>).toString() : undefined
       });
@@ -223,8 +225,7 @@ console.log('x-- urls:', url);
     
     // Make the API request to post the tweet
     return this.makeAuthenticatedRequest(
-    //   'https://api.x.com/1.1/statuses/update.json',
-      'https://api.twitter.com/2/tweets',
+      'https://api.x.com/1.1/statuses/update.json',
       'POST',
       tweetData
     );
