@@ -181,9 +181,7 @@ console.log('x-- urls:', url);
         method: request.method,
         headers: {
           ...authHeader,
-        //   'Content-Type': 'application/x-www-form-urlencoded'
-        'Authorization': process.env.BEARER_TOKEN as string,
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: method === 'POST' ? new URLSearchParams(data as Record<string, string>).toString() : undefined
       });
