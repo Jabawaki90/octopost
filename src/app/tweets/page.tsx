@@ -1,34 +1,17 @@
-// app/tweet/page.tsx
-'use server'
+const handleTweet = async (tweetText: string) => {
+  const response = await fetch('/api/tweet', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ tweet: tweetText }),
+  });
 
-import { cookies } from 'next/headers';
-import TweetForms from '../components/TweetForms';
-import { redirect } from 'next/navigation';
-
-export default async function TweetPage() {
-  // Get credentials from a secure storage method
-  const cookieStore = await cookies();
-  const oauthToken = cookieStore.get('x_access_token')?.value;
-  const oauthTokenSecret = cookieStore.get('x_access_token_secret')?.value;
-  
-  // These should be fetched from environment variables
-  const consumerKey = process.env.CLIENT_API_KEY || '';
-  const consumerSecret = process.env.CLIENT_API_SECRET_KEY || '';
-  
-  // Redirect if not authenticated
-  if (!oauthToken || !oauthTokenSecret) {
-    redirect('/auth/twitter');
+  if (response.ok) {
+    console.log('Tweet posted successfully!');
+  } else {
+    const error: { message: string } = await response.json() as { message: string };
+    console.error('Failed to post tweet:', error);
   }
-  
-  return (
-    <div className="max-w-md mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-6">Post a Tweet</h1>
-      <TweetForms 
-        oauthToken={oauthToken}
-        oauthTokenSecret={oauthTokenSecret}
-        consumerKey={consumerKey}
-        consumerSecret={consumerSecret}
-      />
-    </div>
-  );
-}
+};
+
+// Example usage in a component
+<button onClick={() => handleTweet('Hello from OAuth 2.0!')}>Post Tweet</button>

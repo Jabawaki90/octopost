@@ -1,67 +1,41 @@
-// app/api/tweet/route.ts
+import fetch from 'node-fetch';
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
-import OAuth from 'oauth-1.0a';
 
-export async function POST(req: NextRequest) {
-  try {
-    const { text, oauth_token, oauth_token_secret, consumer_key, consumer_secret } = await req.json();
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  const accessToken = request.cookies.get('x_access_token')?.value;
 
-    console.log('x-- text:', text);
-    console.log('x-- oauth_token:', oauth_token);
-    console.log('x-- oauth_token_secret:', oauth_token_secret);
-    console.log('x-- consumer_key:', consumer_key);
-    console.log('x-- consumer_secret:', consumer_secret);
-    
-    
-    // Initialize OAuth
-    const oauth = new OAuth({
-      consumer: {
-        key: consumer_key,
-        secret: consumer_secret
-      },
-      signature_method: 'HMAC-SHA1',
-      hash_function(base_string, key) {
-        return crypto
-          .createHmac('sha1', key)
-          .update(base_string)
-          .digest('base64');
-      }
-    });
-    
-    const requestData = {
-      url: 'https://api.twitter.com/1.1/statuses/update.json',
-      method: 'POST',
-      data: { status: text }
-    };
-    
-    // Generate authorization header
-    const authorization = oauth.authorize(requestData, {
-      key: oauth_token,
-      secret: oauth_token_secret
-    });
-    
-    const authHeader = oauth.toHeader(authorization);
-    
-    // Make the request
-    const response = await fetch(requestData.url, {
-      method: requestData.method,
-      headers: {
-        ...authHeader,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams(requestData.data).toString()
-    });
-    
-    const data = await response.json();
-    
-    if (!response.ok) {
-      return NextResponse.json({ error: data }, { status: response.status });
-    }
-    
-    return NextResponse.json(data);
-  } catch (error) {
-    console.error('Error posting tweet:', error);
-    return NextResponse.json({ error: 'Failed to post tweet' }, { status: 500 });
+  // Check for authentication
+  if (!accessToken) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  const { tweet }: { tweet: string } = await request.json();
+  if (!tweet) {
+    return NextResponse.json({ error: 'Missing tweet content' }, { status: 400 });
+  }
+
+  const tweetUrl = 'https://api.x.com/2/tweets';
+  const response = await fetch(tweetUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ text: tweet }),
+  });
+
+  if (!response.ok) {
+    const error: { message: string } = await response.json() as { message: string };
+    console.error('Failed to post tweet:', error);
+    return NextResponse.json({ error: 'Failed to post tweet', details: error }, { status: response.status });
+  }
+
+  interface TweetResponse {
+    id: string;
+    text: string;
+    createdAt: string;
+  }
+
+  const data: TweetResponse = await response.json() as TweetResponse;
+  return NextResponse.json(data, { status: 200 });
 }
