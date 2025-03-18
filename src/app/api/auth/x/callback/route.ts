@@ -31,16 +31,16 @@ export async function GET(req: NextRequest) {
     // Store the access token and secret (in secure cookies or your database)
     cookie.set('x_access_token', accessToken.oauth_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-      path: '/'
+      // secure: process.env.NODE_ENV === 'production',
+      // maxAge: 60 * 60 * 24 * 30, // 30 days
+      // path: '/'
     });
     
     cookie.set('x_access_token_secret', accessToken.oauth_token_secret, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-      path: '/'
+      // secure: process.env.NODE_ENV === 'production',
+      // maxAge: 60 * 60 * 24 * 30, // 30 days
+      // path: '/'
     });
     
     // Redirect to a success page or your app's main page
