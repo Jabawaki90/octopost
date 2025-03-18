@@ -1,3 +1,5 @@
+'use server'
+
 import XLoginButton from "./components/XLoginButton";
 import { generatePkceCodes } from "../../lib/pkce";
 
