@@ -40,8 +40,8 @@ export async function POST(req: NextRequest) {
     const xAuth = new XAuth({
       apiKey: process.env.CLIENT_API_KEY!,
       apiSecretKey: process.env.CLIENT_API_SECRET_KEY!,
-      accessToken,
-      accessTokenSecret
+      accessToken: process.env.ACCESS_TOKEN,
+      accessTokenSecret: process.env.ACCESS_TOKEN_SECRET
     });
     
     // Optional parameters

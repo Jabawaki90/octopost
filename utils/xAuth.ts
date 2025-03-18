@@ -222,14 +222,10 @@ console.log('x-- urls:', url);
     };
     
     // Make the API request to post the tweet
-    const user_timeline = this.makeAuthenticatedRequest(
-      'https://api.x.com/1.1/statuses/user_timeline.json',
+    return this.makeAuthenticatedRequest(
+      'https://api.x.com/1.1/statuses/update.json',
       'POST',
       tweetData
     );
-
-    console.log('x-- user_timeline:', user_timeline);
-    
-    return user_timeline
   }
 }
