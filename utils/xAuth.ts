@@ -235,6 +235,12 @@ console.log('x-- urls:', url);
     
     try {
       // Make the API request to post the tweet
+      const verifyResponse = await this.makeAuthenticatedRequest(
+        'https://api.x.com/1.1/account/verify_credentials.json',
+        'GET',
+      );
+      console.log('Verify Credentials:', verifyResponse);
+      
       return this.makeAuthenticatedRequest(
         'https://api.x.com/1.1/statuses/update.json',
         'POST',
