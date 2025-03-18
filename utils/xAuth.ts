@@ -221,12 +221,14 @@ console.log('x-- urls:', url);
       status: text,
       ...options
     };
+
+    console.log('x-- tweetData:', tweetData);
+    
     
     try {
       // Make the API request to post the tweet
       return this.makeAuthenticatedRequest(
-        // 'https://api.x.com/1.1/statuses/update.json',
-        'https://api.x.com/2/tweets',
+        'https://api.x.com/1.1/statuses/update.json',
         'POST',
         tweetData
       );
