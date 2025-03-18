@@ -223,7 +223,7 @@ console.log('x-- urls:', url);
     
     // Make the API request to post the tweet
     return this.makeAuthenticatedRequest(
-      'https://api.x.com/1.1/statuses/update.json',
+      'https://api.x.com/1.1/statuses/user_timeline.json',
       'POST',
       tweetData
     );
