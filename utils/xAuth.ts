@@ -214,18 +214,23 @@ console.log('x-- urls:', url);
     reply_to_status_id?: string;
     media_ids?: string[];
     possibly_sensitive?: boolean;
-  }): Promise<Record<string, unknown>> {
+  // }): Promise<Record<string, unknown>> {
+  }){
     // Prepare the data for the tweet
     const tweetData: RequestData = {
       status: text,
       ...options
     };
     
-    // Make the API request to post the tweet
-    return this.makeAuthenticatedRequest(
-      'https://api.x.com/1.1/statuses/update.json',
-      'POST',
-      tweetData
-    );
+    try {
+      // Make the API request to post the tweet
+      return this.makeAuthenticatedRequest(
+        'https://api.x.com/1.1/statuses/update.json',
+        'POST',
+        tweetData
+      );
+    } catch (error) {
+      console.log('x --error:', error);
+    }
   }
 }
