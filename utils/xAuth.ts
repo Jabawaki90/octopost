@@ -160,6 +160,7 @@ export class XAuth {
       throw new Error('Access token and secret are required for authenticated requests');
     }
 console.log('x-- urls:', url);
+console.log('x-- urls:', url);
 
     const request = {
       url,
@@ -167,15 +168,19 @@ console.log('x-- urls:', url);
       data: data || {}
     };
 
+    console.log('x-- request:', request);
+
     // Set token for this request
     const token = {
       key: this.credentials.accessToken,
       secret: this.credentials.accessTokenSecret
     };
 
+    console.log('x-- token:', token);
+
     // Get authorization header
     const authHeader = this.oauth.toHeader(this.oauth.authorize(request, token));
-
+    console.log('x-- authHeader:', authHeader);
     try {
       const response = await fetch(request.url, {
         method: request.method,
@@ -189,6 +194,9 @@ console.log('x-- urls:', url);
       if (!response.ok) {
         throw new Error(`API request failed: ${response.status} ${response.statusText}`);
       }
+
+      console.log('x-- response:', response);
+      
 
       return response.json();
     } catch (error) {
