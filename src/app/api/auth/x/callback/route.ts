@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
     });
     
     // Redirect to a success page or your app's main page
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/success`);
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/tweet`);
   } catch (error) {
     console.error('Error in X auth callback:', error);
     return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
