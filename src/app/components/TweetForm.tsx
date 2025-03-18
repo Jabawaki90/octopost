@@ -36,7 +36,6 @@ export default function TweetForm({ onSuccess, onError }: TweetFormProps) {
       const response = await fetch('/api/tweet', {
         method: 'POST',
         headers: {
-          'Authorization': process.env.BEARER_TOKEN as string,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ text })
