@@ -56,17 +56,11 @@ export async function POST(req: NextRequest) {
     if (sensitive) options.possibly_sensitive = sensitive;
     
     // Post the tweet
-    // const tweet = await xAuth.postTweet(text, options);
-    const response = await xAuth.makeAuthenticatedRequest(
-      'https://api.x.com/1.1/statuses/update.json',
-      'POST',
-      { status: 'Hello, this is my tweet!' },
-    );
+    const tweet = await xAuth.postTweet(text, options);
 
-    console.log('x-- responsess:', response);
     
     
-    return NextResponse.json(response);
+    return NextResponse.json(tweet);
   } catch (error) {
     console.error('Error posting tweet:', error);
     return NextResponse.json({ 
