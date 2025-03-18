@@ -21,8 +21,8 @@ export async function GET(req: NextRequest) {
     
     // Initialize XAuth with your API credentials
     const xAuth = new XAuth({
-      apiKey: process.env.X_API_KEY!,
-      apiSecretKey: process.env.X_API_SECRET_KEY!,
+      apiKey: process.env.CLIENT_API_KEY!,
+      apiSecretKey: process.env.CLIENT_API_SECRET_KEY!,
     });
     
     // Exchange request token for access token
