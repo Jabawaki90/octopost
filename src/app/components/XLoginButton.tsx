@@ -13,7 +13,7 @@ export default function XLoginButton() {
   // };
 
   const handleTweet = async (tweetText: string) => {
-    const response = await fetch('/api/tweet', {
+    const response = await fetch('/api/tweets', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tweet: tweetText }),
