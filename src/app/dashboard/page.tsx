@@ -39,8 +39,8 @@ export default async function DashboardPage() {
           </div>
           
           <InstagramPostForm 
-            userId={userData.instagramUserId} 
-            accessToken={userData.instagramAccessToken}
+            // userId={userData.instagramUserId} 
+            // accessToken={userData.instagramAccessToken}
           />
         </div>
       ) : (

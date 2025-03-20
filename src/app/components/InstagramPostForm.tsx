@@ -2,130 +2,105 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
-import { InstagramService } from '../../../lib/services/instagram';
-
-interface InstagramPostFormProps {
-  userId: string;
-  accessToken: string;
-}
-
-export default function InstagramPostForm({ userId, accessToken }: InstagramPostFormProps) {
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+export default function InstagramPostForm() {
+  const [image, setImage] = useState<File | null>(null);
   const [caption, setCaption] = useState('');
-  const [isPosting, setIsPosting] = useState(false);
-  const [message, setMessage] = useState('');
-  
+  const [preview, setPreview] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setImageFile(file);
-      
-      // Create preview
+      setImage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        setPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!imageFile) {
-      setMessage('Please select an image');
-      return;
-    }
-    
-    setIsPosting(true);
-    setMessage('');
-    
+    if (!image) return;
+
+    setIsLoading(true);
     try {
-      // First upload the image to your server or a cloud service
       const formData = new FormData();
-      formData.append('image', imageFile);
-      
-      const uploadResponse = await fetch('/api/upload-image', {
+      formData.append('image', image);
+      formData.append('caption', caption);
+
+      const response = await fetch('/api/instagram/post', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
-      
-      if (!uploadResponse.ok) {
-        throw new Error(`Upload failed: ${uploadResponse.statusText}`);
+
+      if (!response.ok) {
+        throw new Error('Failed to post to Instagram');
       }
-      
-      const { imageUrl } = await uploadResponse.json();
-      
-      // Now post to Instagram using the public URL
-      await InstagramService.postImage({
-        imageUrl,
-        caption,
-        userId,
-        accessToken
-      });
-      
-      setMessage('Successfully posted to Instagram!');
-      setImageFile(null);
-      setImagePreview(null);
+
+      setImage(null);
+      setPreview(null);
       setCaption('');
+      alert('Posted successfully to Instagram!');
     } catch (error) {
-      setMessage(`Error posting to Instagram: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error('Error posting to Instagram:', error);
+      alert('Failed to post to Instagram');
     } finally {
-      setIsPosting(false);
+      setIsLoading(false);
     }
   };
-  
+
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-xl font-bold mb-4">Post to Instagram</h2>
-      
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">
-            Select Image
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-            />
-          </label>
-          
-          {imagePreview && (
-            <div className="mt-2">
-              <img src={imagePreview} alt="Preview" className="w-full h-64 object-contain" />
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto p-4">
+      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="hidden"
+          id="imageInput"
+        />
+        <label
+          htmlFor="imageInput"
+          className="cursor-pointer block"
+        >
+          {preview ? (
+            <div className="relative w-full h-64">
+              <Image
+                src={preview}
+                alt="Preview"
+                fill
+                className="object-contain"
+              />
+            </div>
+          ) : (
+            <div className="h-64 flex items-center justify-center">
+              <span className="text-gray-500">
+                Click to upload an image
+              </span>
             </div>
           )}
-        </div>
-        
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">
-            Caption
-            <textarea
-              value={caption}
-              onChange={(e) => setCaption(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-              rows={3}
-            />
-          </label>
-        </div>
-        
-        <button
-          type="submit"
-          disabled={isPosting || !imageFile}
-          className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400"
-        >
-          {isPosting ? 'Posting...' : 'Post to Instagram'}
-        </button>
-        
-        {message && (
-          <div className={`mt-4 p-3 rounded-md ${message.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
-            {message}
-          </div>
-        )}
-      </form>
-    </div>
+        </label>
+      </div>
+
+      <textarea
+        value={caption}
+        onChange={(e) => setCaption(e.target.value)}
+        placeholder="Write a caption..."
+        className="w-full p-2 border rounded-md"
+        rows={4}
+      />
+
+      <button
+        type="submit"
+        disabled={!image || isLoading}
+        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+      >
+        {isLoading ? 'Posting...' : 'Post to Instagram'}
+      </button>
+    </form>
   );
 }
