@@ -4,14 +4,6 @@ import { XAuth } from '../../../../../../utils/xAuth';
 
 export async function GET(req: NextRequest) {
 
-  // Clear existing tokens before re-authorization
-const clearCookies = () => {
-  document.cookie = 'x_access_token=; Max-Age=0; path=/; domain=yourdomain.com; secure; HttpOnly';
-  document.cookie = 'x_access_token_secret=; Max-Age=0; path=/; domain=yourdomain.com; secure; HttpOnly';
-};
-
-// Call this function before redirecting to the authorization URL
-clearCookies();
   try {
     const cookie = await cookies();
     const url = new URL(req.url);
