@@ -58,3 +58,9 @@
 //   // Redirect to homepage
 //   return NextResponse.redirect(new URL('/', request.url));
 // }
+import { NextResponse } from 'next/server';
+
+// This is a placeholder route that returns 404
+export async function GET() {
+  return NextResponse.json({ error: 'This route is no longer in use' }, { status: 404 });
+}
