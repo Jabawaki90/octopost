@@ -6,6 +6,12 @@ import { XAuth } from '../../../../../utils/xAuth';
 export async function GET() {
   try {
     const cookie = await cookies();
+    
+    // Clear existing tokens before starting new auth flow
+    cookie.delete('x_access_token');
+    cookie.delete('x_access_token_secret');
+    cookie.delete('oauth_token_secret');
+
     const xAuth = new XAuth({
       apiKey: process.env.CLIENT_API_KEY!,
       apiSecretKey: process.env.CLIENT_API_SECRET_KEY!,

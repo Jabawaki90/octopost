@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { XAuth } from '../../../../../../utils/xAuth';
 
 export async function GET(req: NextRequest) {
-
   try {
     const cookie = await cookies();
     const url = new URL(req.url);
@@ -13,8 +12,10 @@ export async function GET(req: NextRequest) {
     // Get the oauth_token_secret from cookies
     const oauthTokenSecret = cookie.get('oauth_token_secret')?.value;
     
-    // Clear the temporary cookie
+    // Clear ALL existing tokens
     cookie.delete('oauth_token_secret');
+    cookie.delete('x_access_token');
+    cookie.delete('x_access_token_secret');
     
     if (!oauthToken || !oauthVerifier || !oauthTokenSecret) {
       return NextResponse.json({ error: 'Missing required OAuth parameters' }, { status: 400 });
@@ -29,7 +30,13 @@ export async function GET(req: NextRequest) {
     // Exchange request token for access token
     const accessToken = await xAuth.getAccessToken(oauthToken, oauthVerifier);
     
-    // Store the access token and secret in secure cookies
+    // Log new tokens (remove in production)
+    console.log('New tokens generated:', {
+      token: accessToken.oauth_token.slice(-5),
+      secret: accessToken.oauth_token_secret.slice(-5)
+    });
+
+    // Store the new access token and secret in secure cookies
     cookie.set('x_access_token', accessToken.oauth_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -43,11 +50,14 @@ export async function GET(req: NextRequest) {
       maxAge: 60 * 60 * 24 * 30, // 30 days
       path: '/'
     });
-    
-    // Redirect to a success page or your app's main page
+
+    // Remove the old OAuth 2.0 implementation callback route
     return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/tweet`);
   } catch (error) {
     console.error('Error in X auth callback:', error);
-    return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Authentication failed', 
+      details: (error as Error).message 
+    }, { status: 500 });
   }
 }

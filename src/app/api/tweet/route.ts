@@ -7,12 +7,22 @@ import { XAuth } from '../../../../utils/xAuth';
 
 export async function POST(req: NextRequest) {
   try {
-    // Get access tokens from cookies
     const cookie = await cookies()
     const accessToken = cookie.get('x_access_token')?.value;
     const accessTokenSecret = cookie.get('x_access_token_secret')?.value;
     
+    // Log token verification (remove in production)
+    console.log('Using tokens:', {
+      tokenPresent: !!accessToken,
+      secretPresent: !!accessTokenSecret,
+      tokenLastChars: accessToken?.slice(-5),
+      secretLastChars: accessTokenSecret?.slice(-5)
+    });
+
     if (!accessToken || !accessTokenSecret) {
+      // Clear any remaining tokens and redirect to auth
+      cookie.delete('x_access_token');
+      cookie.delete('x_access_token_secret');
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
