@@ -1,14 +1,18 @@
 'use client';
 
 export default function InstagramLoginButton() {
-  const handleInstagramLogin = () => {
-    const INSTAGRAM_APP_ID = process.env.NEXT_PUBLIC_INSTAGRAM_APP_ID;
-    const REDIRECT_URI = encodeURIComponent(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/callback/instagram`
-    );
-    const INSTAGRAM_AUTH_URL = `https://api.instagram.com/oauth/authorize?client_id=${INSTAGRAM_APP_ID}&redirect_uri=${REDIRECT_URI}&scope=user_profile,user_media&response_type=code`;
-
-    window.location.href = INSTAGRAM_AUTH_URL;
+  const handleInstagramLogin = async () => {
+    try {
+      const response = await fetch('/api/auth/instagram');
+      if (response.ok) {
+        const data = await response.json();
+        window.location.href = data.url;
+      } else {
+        console.error('Failed to initiate Instagram login');
+      }
+    } catch (error) {
+      console.error('Error during Instagram login:', error);
+    }
   };
 
   return (

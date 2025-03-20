@@ -3,8 +3,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { XAuth } from '../../../../../../utils/xAuth';
 
 export async function GET(req: NextRequest) {
+
+  // Clear existing tokens before re-authorization
+const clearCookies = () => {
+  document.cookie = 'x_access_token=; Max-Age=0; path=/; domain=yourdomain.com; secure; HttpOnly';
+  document.cookie = 'x_access_token_secret=; Max-Age=0; path=/; domain=yourdomain.com; secure; HttpOnly';
+};
+
+// Call this function before redirecting to the authorization URL
+clearCookies();
   try {
-    const cookie = await cookies()
+    const cookie = await cookies();
     const url = new URL(req.url);
     const oauthToken = url.searchParams.get('oauth_token');
     const oauthVerifier = url.searchParams.get('oauth_verifier');
@@ -28,19 +37,19 @@ export async function GET(req: NextRequest) {
     // Exchange request token for access token
     const accessToken = await xAuth.getAccessToken(oauthToken, oauthVerifier);
     
-    // Store the access token and secret (in secure cookies or your database)
+    // Store the access token and secret in secure cookies
     cookie.set('x_access_token', accessToken.oauth_token, {
       httpOnly: true,
-      // secure: process.env.NODE_ENV === 'production',
-      // maxAge: 60 * 60 * 24 * 30, // 30 days
-      // path: '/'
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      path: '/'
     });
     
     cookie.set('x_access_token_secret', accessToken.oauth_token_secret, {
       httpOnly: true,
-      // secure: process.env.NODE_ENV === 'production',
-      // maxAge: 60 * 60 * 24 * 30, // 30 days
-      // path: '/'
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      path: '/'
     });
     
     // Redirect to a success page or your app's main page
